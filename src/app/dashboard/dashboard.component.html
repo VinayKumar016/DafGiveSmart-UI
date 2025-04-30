@@ -1,0 +1,132 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark px-3" style="background-color: #005F83;">
+  <a class="navbar-brand d-flex align-items-center" routerLink="/dashboard">
+    <img routerLink="/home" src="assets/logo.png" alt="Logo" style="height: 55px; width: auto; border-radius: 8px;" class="d-inline-block align-text-top">
+  </a>
+
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarContent">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <a class="nav-link active" routerLink="/dashboard">Account</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/add-donation">Add Donation</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/view-donation">View Donation</a>
+      </li>
+    </ul>
+
+    <div class="d-lg-flex text-white align-items-center">
+      <span class="me-2">Hello, {{ userName }}</span>
+      <a routerLink="/login" class="btn btn-danger text-decoration-none" (click)="logout()">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Dashboard Section -->
+<div class="container-fluid mt-4">
+  <h4 class="text-center fw-bold">Account Dashboard</h4>
+  <div class="horizontal-line"></div>
+
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 mb-4">
+      <div class="sidebar">
+        <h5>Total Balance</h5>
+        <h3>₹{{ dafBalance }}</h3>
+      </div>
+
+      <div class="section-box">
+        <h6>Total Donation</h6>
+        <h4>₹{{ totalDonations }}</h4>
+      </div>
+
+      <div class="section-box">
+        <h6>Charities Donated to:</h6>
+        <span *ngIf="charitiesDonatedTo.length!==0; else nodata">
+          <ul>
+            <li *ngFor="let charity of charitiesDonatedTo">{{ charity }}</li>
+          </ul>
+        </span>
+        <ng-template #nodata>
+          <p>No charities donated to yet.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+      <!-- Stylish Search Bar -->
+      <div class="d-flex justify-content-center mb-4 align-items-center">
+        <input
+          type="text"
+          class="form-control search-bar"
+          placeholder="Search for charity..."
+          [(ngModel)]="searchQuery"
+          (input)="filterCharities()"
+          style="width: 70%; height: 50px; font-size: 1.2rem; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
+        />
+      </div>
+
+      <!-- Filters -->
+      <div class="d-flex justify-content-between mb-4">
+        <select class="form-select" [(ngModel)]="selectedCategory" (change)="applyFilters()" style="width: 48%; height: 45px; border-radius: 10px;">
+          <option value="">All Categories</option>
+          <option *ngFor="let category of uniqueCategories">{{ category }}</option>
+        </select>
+        <select class="form-select" [(ngModel)]="selectedLocation" (change)="applyFilters()" style="width: 48%; height: 45px; border-radius: 10px;">
+          <option value="">All Locations</option>
+          <option *ngFor="let location of uniqueLocations">{{ location }}</option>
+        </select>
+      </div>
+
+      <!-- Stylish Table -->
+      <div class="table-container">
+        <table class="table table-hover align-middle" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border-radius: 10px; overflow: hidden;">
+          <thead class="table-page">
+            <tr>
+              <th>Charity</th>
+              <th>Location</th>
+              <th>Category</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let charity of filteredCharities">
+              <td>{{ charity.name }}</td>
+              <td>{{ charity.location }}</td>
+              <td>{{ charity.category }}</td>
+              <td class="text-center">
+                <button
+                  class="btn btn-donate"
+                  (click)="navigateToDonate(charity.charityId)"
+                >
+                  <i class="fas fa-heart me-2"></i> Donate
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredCharities.length === 0">
+              <td colspan="4" class="text-center">No results found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center py-3 mt-5" style="background-color: whitesmoke; color: #005F83;">
+  <div class="container">
+    <p class="mb-0">© 2025 Donor Advisor Fund. All rights reserved.</p>
+    <p class="mb-0">
+      <a href="#" class="me-3" style="color: #005F83;">Privacy Policy</a>
+      <a href="#" style="color: #005F83;">Terms of Service</a>
+    </p>
+  </div>
+</footer>

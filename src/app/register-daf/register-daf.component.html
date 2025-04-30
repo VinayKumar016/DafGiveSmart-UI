@@ -1,0 +1,175 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #005F83;">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" routerLink="/login">
+        <img routerLink="/home"  src="assets/logo.png" alt="Logo" style="height: 55px; border-radius: 8px;">
+      </a>
+      <div class="ms-auto text-white fw-bold">Charitable Donation Tracker</div>
+    </div>
+  </nav>
+  
+  <!-- Registration Form -->
+  <div class="container-fluid">
+    <div class="row min-vh-100">
+      <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center text-white">
+        <div class="text-center">
+          <img src="assets/logo.png" style="max-height: 100px; border-radius: 8px;" alt="Logo" />
+          <h4 class="mt-3" style="color: #005F83;">Smart Giving, Measurable Impact</h4>
+          <img src="assets/Pre1.png" alt="Donation Image" class="img-fluid " style="width: 60%; height: 60%;" />
+        </div>
+      </div>
+      <div class="col-md-6 d-flex align-items-center justify-content-center">
+        <div class="container">
+          <div class="login-box">
+            <h4 class="text-center mb-4" style="color:#005F83">DAF REGISTRATION</h4>
+          
+            <form (ngSubmit)="registerUser()">
+              <!-- Full Name -->
+              <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input #nameInput="ngModel" class="form-control" [(ngModel)]="user.name" name="name" required />
+                <div class="invalid-feedback" *ngIf="nameInput?.invalid && nameInput?.touched">
+                  Please enter your full name.
+                </div>
+              </div>
+          
+              <!-- Email -->
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  [ngClass]="{ 'is-invalid': emailExists || (emailInput?.invalid && emailInput?.touched) }"
+                  [(ngModel)]="user.email"
+                  name="email"
+                  #emailInput="ngModel"
+                  (input)="emailExists = false"
+                  required
+                  pattern="^(?!.*\.\.)[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                  
+                />
+                <!-- Error: Email already exists -->
+                <div class="invalid-feedback" *ngIf="emailExists">
+                  This email is already registered.
+                </div>
+                <!-- Error: Invalid email format -->
+                <div class="invalid-feedback" *ngIf="emailInput?.errors?.['pattern'] && emailInput?.touched && !emailExists">
+                  Please enter a valid email address.
+                </div>
+              </div>
+          
+              <!-- Password -->
+              <div class="mb-3 position-relative">
+                <label class="form-label d-flex align-items-center">
+                  Password
+                  <span class="input-group ms-2 info-icon" (mouseenter)="showTooltip = true" (mouseleave)="showTooltip = false" >
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div class="tooltip-box" *ngIf="showTooltip">
+                      <ul>
+                        <li>At least 1 uppercase letter</li>
+                        <li>At least 1 lowercase letter</li>
+                        <li>At least 1 number</li>
+                        <li>At least 1 special character</li>
+                        <li>Minimum 8 characters</li>
+                      </ul>
+                    </div>
+                  </span>
+                </label>
+                <div class="input-group">
+                  <input
+                    [type]="showPassword ? 'text' : 'password'"
+                    class="form-control"
+                    [(ngModel)]="user.password"
+                    name="password"
+                    (input)="checkPasswordStrength(user.password); checkPasswordMatch()"
+                    required
+                  />
+                  <span class="input-group-text toggle-password" (click)="togglePassword()">
+                    <i class="fa" [ngClass]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                  </span>
+                </div>
+              </div>
+          
+              <!-- Confirm Password -->
+              <div class="mb-3 position-relative">
+                <label class="form-label">Confirm Password</label>
+                <div class="input-group">
+                  <input
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    class="form-control"
+                    [(ngModel)]="confirmPassword"
+                    name="confirmPassword"
+                    (input)="checkPasswordMatch()"
+                    [ngClass]="{ 'is-invalid': confirmTouched && !passwordsMatch }"
+                    required
+                  />
+                  <span class="input-group-text toggle-password" (click)="toggleConfirmPassword()">
+                    <i class="fa" [ngClass]="showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                  </span>
+                </div>
+                <div class="invalid-feedback" *ngIf="confirmTouched && !passwordsMatch">
+                  Passwords do not match.
+                </div>
+              </div>
+          
+              <!-- Mobile Number -->
+                            <!-- Mobile Number -->
+              <div class="mb-3">
+                <label class="form-label">Mobile Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="user.mobile"
+                  name="mobile"
+                  #mobileInput="ngModel"
+                  required
+                  pattern="^[0-9]{10}$"
+               
+                  [ngClass]="{ 'is-invalid': mobileInput?.invalid && mobileInput?.touched }"
+                />
+                <div class="invalid-feedback" *ngIf="mobileInput?.errors?.['pattern'] && mobileInput?.touched">
+                  Please enter a valid 10-digit mobile number.
+                </div>
+              </div>
+          
+              <!-- Location -->
+              <div class="mb-3">
+                <label class="form-label">Location</label>
+                <input class="form-control" [(ngModel)]="user.location" name="location" required />
+              </div>
+          
+              <!-- Submit -->
+              <div class="d-grid">
+                <button type="submit" class="btn" style="background-color: #005F83; color:white;">
+                  Register
+                </button>
+              </div>
+          
+              <!-- Link to Login -->
+              <div class="mt-3 text-center">
+                <span>Already have an account?</span>
+                <a routerLink="/login" style="color: #005F83; text-decoration: underline; font-weight: 500;">
+                  Login
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Registration Layout -->
+
+
+  
+  <!-- Footer -->
+  <footer class="text-center py-3 mt-5" style="background-color: whitesmoke; color: #005F83;">
+    <div class="container">
+      <p class="mb-0">© 2025 Donor Advisor Fund. All rights reserved.</p>
+      <p class="mb-0">
+        <a href="#" class="me-3" style="color: #005F83;">Privacy Policy</a>
+        <a href="#" style="color: #005F83;">Terms of Service</a>
+      </p>
+    </div>
+  </footer>
+  

@@ -1,0 +1,161 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark px-3" style="background-color: #005F83;">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/dashboard">
+      <img routerLink="/home" src="assets/logo.png" alt="Logo" style="height: 55px; width: auto; border-radius: 8px;" class="d-inline-block align-text-top">
+    </a>
+  
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard">Account</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/add">Add Donation</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/view-donation">View Donation</a>
+        </li>
+      </ul>
+  
+      <div class="d-lg-flex text-white align-items-center">
+        <span class="me-2">Hello, {{ userName }}</span>
+        <a routerLink="/login" class="btn btn-danger text-decoration-none" (click)="logout()">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid mt-4">
+    <h4 class="text-center fw-bold">Add Donation</h4>
+    <div class="horizontal-line"></div>
+  
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 mb-4">
+        <div class="sidebar">
+          <h5>Total Balance</h5>
+          <h3>₹{{ dafBalance }}</h3>
+        </div>
+  
+        <div class="section-box">
+          <h6>Total Donation</h6>
+          <h4>₹{{ totalDonated }}</h4>
+        </div>
+  
+        <div class="section-box">
+          <h6>Charities Donated to:</h6>
+          <span *ngIf="donatedCharities.length!==0; else nodata">
+            <ul>
+              <li *ngFor="let charity of donatedCharities">{{ charity.name }}</li>
+            </ul>
+          </span>
+          <ng-template #nodata>
+            <p>No charities donated to yet.</p>
+          </ng-template>
+        </div>
+      </div>
+  
+      <!-- Donation Form -->
+      <!-- Search Bar -->
+      <div class="col-md-9">
+        <!-- Search Bar -->
+        <!-- <div class="d-flex justify-content-start mb-4 top">
+          <input
+            type="text"
+            class="form-control search-bar"
+            placeholder="Search for charity..."
+            [(ngModel)]="searchTerm"
+            (input)="filteredCharities"
+            (focus)="showCharityList = true"
+            (blur)="hideCharityList()"
+            style="width: 50%; height: 50px; font-size: 1.2rem; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
+          />
+        </div> -->
+  
+        <!-- Charity List -->
+        <div class="parent-container position-relative d-flex justify-content-center">
+          <input
+            type="text"
+            class="form-control search-bar"
+            placeholder="Search for charity..."
+            [(ngModel)]="searchTerm"
+            (focus)="showCharityList = true"
+            (blur)="hideCharityList()"
+            (input)="filteredCharities"
+            style="width: 70%; height: 50px; font-size: 1.2rem; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"
+          />
+          
+          <div
+  class="charity-list-overlay"
+  *ngIf="showCharityList"
+  style="width: 70%; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); background-color: #f9f9f9; max-height: 300px; overflow-y: auto; position: absolute; top: 60px; left: 15%;"
+>
+  <div
+    *ngFor="let charity of filteredCharities"
+    class="p-2 border-bottom d-flex justify-content-between align-items-center"
+    style="cursor: pointer; border-radius: 10px; transition: background-color 0.3s ease;"
+    (click)="selectCharity(charity)"
+    
+  >
+    <span class="text-start" style="flex: 1; font-weight: bold;">{{ charity.name }}</span>
+    <span class="text-center" style="flex: 1;">{{ charity.category }}</span>
+    <span class="text-end" style="flex: 1;">{{ charity.location }}</span>
+  </div>
+  <div *ngIf="filteredCharities.length === 0" class="p-2 text-center">
+    <strong>No results found</strong>
+  </div>
+</div>
+        </div>
+        <!-- Donation Details -->
+                <div class="form-section mt-4" *ngIf="selectedCharity">
+          <h5 class="mb-4 text-center">Donating to: <strong>{{ selectedCharity.name }}</strong></h5>
+        
+          <div class="mb-4">
+            <label for="donationAmount" class="form-label fw-bold">Amount:</label>
+            <input
+              type="number"
+              id="donationAmount"
+              class="form-control input-field"
+              placeholder="Enter donation amount"
+              [(ngModel)]="donationAmount"
+            />
+          </div>
+        
+          <div class="mb-4">
+            <label for="donationDesc" class="form-label fw-bold">Description / Message (Optional):</label>
+            <textarea
+              id="donationDesc"
+              class="form-control input-field"
+              [(ngModel)]="donationDesc"
+              rows="4"
+              placeholder="Enter your message"
+            ></textarea>
+          </div>
+        
+          <div class="form-check mt-4">
+            <input type="checkbox" class="form-check-input" id="terms" [(ngModel)]="agreedToTerms">
+            <label class="form-check-label" for="terms">I agree to all terms & conditions</label>
+          </div>
+
+          <div class="text mt-4">
+            <button class="btn btn-primary btn-lg" (click)="donate()">Donate</button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+<!-- Footer -->
+<footer class="text-center py-3 mt-5" style="background-color: whitesmoke; color: #005F83;">
+  <div class="container">
+    <p class="mb-0">© 2025 Donor Advisor Fund. All rights reserved.</p>
+    <p class="mb-0">
+      <a href="#" class="me-3" style="color: #005F83;">Privacy Policy</a>
+      <a href="#" style="color: #005F83;">Terms of Service</a>
+    </p>
+  </div>
+</footer>
